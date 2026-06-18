@@ -1,0 +1,14 @@
+{
+  "name": "Salon App",
+  "short_name": "Salon App",
+  "description": "AI-powered consultation platform for professional salons",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#08080F",
+  "theme_color": "#7C3AED",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
