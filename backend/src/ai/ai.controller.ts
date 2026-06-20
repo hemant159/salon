@@ -11,4 +11,15 @@ export class AiController {
   suggest(@Body() body: { session_id: string }) {
     return this.aiService.generateSuggestions(body.session_id);
   }
+
+  @Post('generate-description')
+  generateDescription(
+    @Body() body: { gender: string; service_ids: string[]; photo?: string },
+  ) {
+    return this.aiService.generateDescription(
+      body.gender,
+      body.service_ids,
+      body.photo,
+    );
+  }
 }

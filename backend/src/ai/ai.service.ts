@@ -100,6 +100,44 @@ export class AiService {
     return allSuggestions;
   }
 
+  async generateDescription(gender: string, serviceIds: string[], photoUrl?: string) {
+    const services = await this.servicesService.findByIds(serviceIds);
+    const serviceNames = services.map((s: { name: string }) => s.name);
+
+    const prompt = `You are a professional salon AI consultant.
+Customer gender: ${gender}
+Selected services: ${serviceNames.join(', ')}
+
+Analyze the customer photo (if provided) and the selected services.
+Generate a concise, professional stylist notes description (2-3 sentences max) that details what specific style direction, hair texture focus, or face shape considerations the barber/stylist should prioritize.
+Make it sound like a precise salon request or consultation note.
+For example: "Wants a textured crop with a mid skin fade to suit their oval face shape. Keep the beard lined up and clean with natural cheek lines."
+Do NOT include markdown, headings, prefixes like "Stylist notes:", or quotes. Return ONLY the plain text suggestion.`;
+
+    const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [];
+
+    if (photoUrl) {
+      messages.push({
+        role: 'user',
+        content: [
+          { type: 'text', text: prompt },
+          { type: 'image_url', image_url: { url: photoUrl, detail: 'low' } },
+        ],
+      });
+    } else {
+      messages.push({ role: 'user', content: prompt });
+    }
+
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages,
+      max_tokens: 150,
+    });
+
+    return { description: response.choices[0]?.message?.content?.trim() ?? '' };
+  }
+
+
   private buildPrompt(session: { gender: string; description: string | null }, serviceNames: string[]): string {
     return `You are a professional salon AI consultant with expertise in hair, beauty, and grooming.
 Customer gender: ${session.gender}

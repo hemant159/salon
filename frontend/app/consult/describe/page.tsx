@@ -15,6 +15,58 @@ export default function DescribePage() {
   const [error, setError] = useState('');
   const [state, setState] = useState<ReturnType<typeof getConsultState> | null>(null);
 
+  async function handleLetAiSuggest() {
+    if (!state) return;
+    setLoading(true);
+    setError('');
+    
+    try {
+      let finalDescription = '';
+      const isDemo = !localStorage.getItem('salon_token') || localStorage.getItem('salon_token') === 'demo-token-not-real';
+      if (isDemo) {
+        finalDescription = state.gender === 'men' 
+          ? 'Wants a modern clean fade with textured length on top, keeping it easy to style. Trim the beard to a clean contour with a sharp neckline.'
+          : 'Looking for soft face-framing layers to enhance natural hair volume and shape, with subtle golden highlights suitable for warm skin tones.';
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setConsultState({ description: finalDescription, sessionId: undefined as unknown as string });
+        router.push('/consult/analyzing');
+        return;
+      }
+
+      const photo = state.photoPreviews && state.photoPreviews.length > 0 ? state.photoPreviews[0] : undefined;
+      const res = await api.ai.generateDescription(
+        state.gender ?? 'men',
+        state.selectedServiceIds,
+        photo
+      );
+
+      if (res && res.description) {
+        finalDescription = res.description;
+      }
+
+      const formData = new FormData();
+      formData.append('gender', state.gender ?? 'men');
+      formData.append('service_ids', JSON.stringify(state.selectedServiceIds));
+      if (finalDescription.trim()) formData.append('description', finalDescription.trim());
+      if (state.client?.id) formData.append('client_id', state.client.id);
+      
+      if (state.photoPreviews && state.photoPreviews.length > 0) {
+        const fetchRes = await fetch(state.photoPreviews[0]);
+        const blob = await fetchRes.blob();
+        const file = new File([blob], `photo_0.jpg`, { type: blob.type });
+        formData.append('photo', file);
+      }
+
+      const session = await api.sessions.create(formData);
+      setConsultState({ description: finalDescription, sessionId: session.id });
+      router.push('/consult/analyzing');
+    } catch (err: any) {
+      setError(err.message ?? 'Failed to auto-generate request notes');
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (!isAuthenticated()) { router.replace('/login'); return; }
     const s = getConsultState();
@@ -88,7 +140,51 @@ export default function DescribePage() {
               placeholder="e.g. Needs a low maintenance fade. Receding hairline. Prefers textured top."
               style={{ minHeight: '140px', resize: 'vertical', lineHeight: 1.5 }}
             />
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '12px' }}>
+            
+            {/* Auto-generate request button */}
+            <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-start' }}>
+              <button
+                type="button"
+                onClick={handleLetAiSuggest}
+                disabled={loading}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: 'rgba(197, 157, 95, 0.1)',
+                  border: '1px solid rgba(197, 157, 95, 0.4)',
+                  color: 'var(--purple-light)',
+                  padding: '8px 16px',
+                  borderRadius: 'var(--r-sm)',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  transition: 'all 0.3s ease',
+                  outline: 'none',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                }}
+                onMouseEnter={e => {
+                  if (!loading) {
+                    e.currentTarget.style.background = 'rgba(197, 157, 95, 0.2)';
+                    e.currentTarget.style.borderColor = 'var(--purple-light)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'rgba(197, 157, 95, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(197, 157, 95, 0.4)';
+                }}
+              >
+                {loading ? (
+                  <Loader2 size={14} className="spin" />
+                ) : (
+                  <Sparkles size={14} />
+                )}
+                {loading ? 'AI is thinking...' : "Let's AI Suggest"}
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '16px' }}>
               {['Low maintenance', 'Professional look', 'Cover greys', 'Volume boost'].map(tag => (
                 <button
                   key={tag} type="button"
