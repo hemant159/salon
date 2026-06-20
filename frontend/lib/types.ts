@@ -39,6 +39,7 @@ export interface Suggestion {
   description: string;
   compatibility_note: string;
   technique_tips: string;
+  image_url?: string;
 }
 
 export interface Session {

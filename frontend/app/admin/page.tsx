@@ -23,8 +23,8 @@ export default function AdminDashboardPage() {
     if (user?.role !== 'admin') { router.replace('/home'); return; }
 
     Promise.all([
-      api.admin.overview(),
-      api.admin.servicePopularity(),
+      api.analytics.overview(),
+      api.analytics.services(),
     ]).then(([overview, services]) => {
       setData(overview);
       setChartData(services.slice(0, 5)); // Top 5
