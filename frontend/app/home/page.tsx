@@ -130,7 +130,7 @@ export default function HomePage() {
               </svg>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '17px', marginBottom: '3px' }}>Men</div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '17px', marginBottom: '3px', color: '#E8C691' }}>Men</div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>Haircut · Beard · Color · Skin · 5 more</div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
@@ -174,7 +174,7 @@ export default function HomePage() {
               </svg>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '17px', marginBottom: '3px' }}>Women</div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '17px', marginBottom: '3px', color: '#E8C691' }}>Women</div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.4 }}>Hairstyle · Makeup · Color · Bridal · 6 more</div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2">
