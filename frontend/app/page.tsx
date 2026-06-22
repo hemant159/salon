@@ -19,22 +19,14 @@ export default function LandingPage() {
     <div style={{ backgroundColor: '#000000', color: '#ffffff', minHeight: '100vh', fontFamily: 'var(--font-sans)', overflowX: 'hidden' }}>
       
       {/* Navbar */}
-      <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        padding: '20px 40px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        background: scrolled ? 'rgba(0,0,0,0.9)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(10px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
-        transition: 'all 0.3s ease',
-      }}>
+      <nav className={`landing-nav ${scrolled ? 'scrolled' : ''}`}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
           <div style={{ fontSize: '14px', letterSpacing: '0.05em', color: 'rgba(255,255,255,0.7)' }}>
             PHONE: 505-707-5050
           </div>
         </div>
 
-        <div style={{ display: 'none', gap: '40px', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '0.15em', '@media (min-width: 768px)': { display: 'flex' } } as React.CSSProperties}>
+        <div className="landing-nav-links">
           <a href="#services" style={{ color: '#fff', textDecoration: 'none' }}>Services</a>
           <a href="#team" style={{ color: '#fff', textDecoration: 'none' }}>Team</a>
           <a href="#contact" style={{ color: '#fff', textDecoration: 'none' }}>Contact</a>
@@ -52,44 +44,21 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <header style={{
-        position: 'relative', height: '100vh', minHeight: '600px',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        backgroundImage: 'url(/hero.png)', backgroundSize: 'cover', backgroundPosition: 'center 30%',
-        textAlign: 'center',
-      }}>
+      <header className="hero-header">
         {/* Dark overlay */}
-        <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-panel) 0%, rgba(0,0,0,0.8) 100%)', zIndex: 1 }} />
+        <div className="hero-overlay" />
         
         {/* Left Logo (Absolute) */}
-        <div style={{
-          position: 'absolute', left: '40px', top: '50%', transform: 'translateY(-50%)',
-          zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
-          opacity: 0.8
-        }}>
+        <div className="hero-logo-side">
           <Scissors size={32} />
-          <div style={{ fontSize: '10px', letterSpacing: '0.2em', writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>BARBERSHOP</div>
+          <div className="vertical-text">BARBERSHOP</div>
         </div>
 
-        <div style={{ position: 'relative', zIndex: 10, maxWidth: '800px', padding: '0 20px' }}>
-          <h1 style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: 'clamp(50px, 10vw, 100px)',
-            fontWeight: 400,
-            lineHeight: 1.1,
-            marginBottom: '16px',
-            color: '#ffffff',
-            textShadow: '0 10px 30px rgba(0,0,0,0.5)'
-          }}>
+        <div className="hero-content">
+          <h1 className="hero-title">
             Barbershop
           </h1>
-          <p style={{
-            fontSize: '16px',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.8)',
-            marginBottom: '40px'
-          }}>
+          <p className="hero-subtitle">
             AI Consultation Platform
           </p>
           
@@ -104,32 +73,26 @@ export default function LandingPage() {
         </div>
 
         {/* Scroll badge */}
-        <div style={{
-          position: 'absolute', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
-          zIndex: 10, width: '100px', height: '100px',
-          border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          animation: 'spin 20s linear infinite'
-        }}>
-          <div style={{ position: 'absolute', fontSize: '10px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.6)' }}>
+        <div className="hero-scroll-badge">
+          <div className="hero-scroll-badge-text">
             SCROLL FOR MORE
           </div>
-          <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#fff' }} />
+          <div className="hero-scroll-badge-dot" />
         </div>
       </header>
 
-      <main style={{ padding: '100px 5vw', maxWidth: '1400px', margin: '0 auto' }}>
+      <main className="landing-main">
         
         {/* Section 1 */}
-        <section style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '60px', marginBottom: '120px' }}>
-          <div style={{ flex: '1 1 400px' }}>
-            <img src="/service1.png" alt="Consultation" style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover' }} />
+        <section className="landing-section">
+          <div className="landing-section-media">
+            <img src="/service1.png" alt="Consultation" />
           </div>
-          <div style={{ flex: '1 1 400px', paddingRight: '2vw' }}>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '42px', fontWeight: 400, marginBottom: '30px', lineHeight: 1.2 }}>
+          <div className="landing-section-text pad-right">
+            <h2 className="landing-section-title">
               Precision AI Analysis<br />and Style Suggestions
             </h2>
-            <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.3)', marginBottom: '30px' }} />
+            <div className="landing-section-divider" />
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', lineHeight: 1.8, marginBottom: '20px' }}>
               Elevate your consultation process. Our AI engine analyzes facial structure, hair texture, and current trends to provide the mathematically perfect style for every client.
             </p>
@@ -140,12 +103,12 @@ export default function LandingPage() {
         </section>
 
         {/* Section 2 (Reversed) */}
-        <section style={{ display: 'flex', flexWrap: 'wrap-reverse', alignItems: 'center', gap: '60px', marginBottom: '120px' }}>
-          <div style={{ flex: '1 1 400px', paddingLeft: '2vw' }}>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '42px', fontWeight: 400, marginBottom: '30px', lineHeight: 1.2 }}>
+        <section className="landing-section-reversed">
+          <div className="landing-section-text pad-left">
+            <h2 className="landing-section-title">
               Boost Client Retention<br />by up to 80%
             </h2>
-            <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.3)', marginBottom: '30px' }} />
+            <div className="landing-section-divider" />
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', lineHeight: 1.8, marginBottom: '20px' }}>
               Clients who can visualize their results are significantly more likely to return. Build unparalleled trust by ensuring perfect communication and managing expectations.
             </p>
@@ -153,21 +116,21 @@ export default function LandingPage() {
               Store client history securely in our portal, allowing you to instantly recall their past styles, preferences, and AI consultations on their next visit.
             </p>
           </div>
-          <div style={{ flex: '1 1 400px' }}>
-            <img src="/service2.png" alt="Premium Products" style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />
+          <div className="landing-section-media">
+            <img src="/service2.png" alt="Premium Products" />
           </div>
         </section>
 
         {/* Section 3 */}
-        <section style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '60px', marginBottom: '140px' }}>
-          <div style={{ flex: '1 1 400px' }}>
-            <img src="/service3.png" alt="Premium Experience" style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover' }} />
+        <section className="landing-section">
+          <div className="landing-section-media">
+            <img src="/service3.png" alt="Premium Experience" />
           </div>
-          <div style={{ flex: '1 1 400px', paddingRight: '2vw' }}>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '42px', fontWeight: 400, marginBottom: '30px', lineHeight: 1.2 }}>
+          <div className="landing-section-text pad-right">
+            <h2 className="landing-section-title">
               A Premium Visual<br />Experience
             </h2>
-            <div style={{ width: '40px', height: '1px', background: 'rgba(255,255,255,0.3)', marginBottom: '30px' }} />
+            <div className="landing-section-divider" />
             <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', lineHeight: 1.8, marginBottom: '20px' }}>
               From classic fades to modern texturing, our platform caters to all grooming needs. Simply snap a photo with your tablet, and within seconds present 3 hyper-realistic outcomes.
             </p>
@@ -178,9 +141,9 @@ export default function LandingPage() {
         </section>
 
         {/* Services Grid Section */}
-        <section id="services" style={{ display: 'flex', flexWrap: 'wrap', gap: '40px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '80px' }}>
-          <div style={{ flex: '1 1 300px' }}>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '42px', fontWeight: 400, marginBottom: '40px' }}>Our AI Services</h2>
+        <section id="services" className="services-section">
+          <div className="services-sidebar">
+            <h2>Our AI Services</h2>
             <Link href="/login" style={{
               display: 'inline-flex', alignItems: 'center', gap: '10px',
               fontSize: '14px', letterSpacing: '0.05em', color: '#fff', textDecoration: 'none',
@@ -190,7 +153,7 @@ export default function LandingPage() {
             </Link>
           </div>
           
-          <div style={{ flex: '2 1 600px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1px', background: 'rgba(255,255,255,0.1)' }}>
+          <div className="services-grid">
             
             {[
               { icon: Scissors, title: 'Classic Haircut', sub: 'Analyzed' },
