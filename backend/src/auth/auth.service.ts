@@ -59,6 +59,15 @@ export class AuthService {
     return { access_token: token, user: profile };
   }
 
+  async superAdminLogin(email: string) {
+    if (email !== process.env.SUPER_ADMIN_EMAIL) {
+      throw new UnauthorizedException('Not authorized as Super Admin');
+    }
+    const payload = { sub: 'super-admin-root', email, role: 'super_admin' };
+    const token = this.jwt.sign(payload);
+    return { access_token: token, user: { email, role: 'super_admin' } };
+  }
+
   async getProfile(userId: string) {
     const { data } = await this.supabase.db
       .from('profiles')

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -19,15 +19,32 @@ export class SubscriptionsService {
     return subscription;
   }
 
+  async create(data: { name: string; monthlyPrice: number; quarterlyPrice: number; annualPrice: number; barberLimit: number; aiLimit: number }) {
+    if (!data.name) {
+      throw new BadRequestException('Plan name is required');
+    }
+    return this.prisma.subscription.create({
+      data: {
+        name: data.name,
+        monthlyPrice: Number(data.monthlyPrice) || 0,
+        quarterlyPrice: Number(data.quarterlyPrice) || 0,
+        annualPrice: Number(data.annualPrice) || 0,
+        barberLimit: Number(data.barberLimit) || 0,
+        aiLimit: Number(data.aiLimit) || 0,
+      },
+    });
+  }
+
   async update(id: string, data: any) {
-    // Only allow updating specific fields
-    const { price, barberLimit, aiLimit } = data;
+    const { monthlyPrice, quarterlyPrice, annualPrice, barberLimit, aiLimit } = data;
     
     try {
       return await this.prisma.subscription.update({
         where: { id },
         data: {
-          price: price !== undefined ? Number(price) : undefined,
+          monthlyPrice: monthlyPrice !== undefined ? Number(monthlyPrice) : undefined,
+          quarterlyPrice: quarterlyPrice !== undefined ? Number(quarterlyPrice) : undefined,
+          annualPrice: annualPrice !== undefined ? Number(annualPrice) : undefined,
           barberLimit: barberLimit !== undefined ? Number(barberLimit) : undefined,
           aiLimit: aiLimit !== undefined ? Number(aiLimit) : undefined,
         },
@@ -37,21 +54,34 @@ export class SubscriptionsService {
     }
   }
 
+  async remove(id: string) {
+    try {
+      return await this.prisma.subscription.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw new BadRequestException(`Cannot delete Subscription. It may be in use by active salons.`);
+    }
+  }
+
   // Initial seeder method (optional, for convenience)
   async seedPlans() {
     const defaultPlans = [
-      { name: 'Free', price: 0.0, barberLimit: 2, aiLimit: 20 },
-      { name: 'Starter', price: 29.0, barberLimit: 5, aiLimit: 100 },
-      { name: 'Premium', price: 99.0, barberLimit: 20, aiLimit: 1000 },
-      { name: 'Enterprise', price: 299.0, barberLimit: 9999, aiLimit: 99999 },
+      { name: 'Free', monthlyPrice: 0.0, quarterlyPrice: 0.0, annualPrice: 0.0, barberLimit: 2, aiLimit: 20 },
+      { name: 'Starter', monthlyPrice: 29.0, quarterlyPrice: 79.0, annualPrice: 290.0, barberLimit: 5, aiLimit: 100 },
+      { name: 'Premium', monthlyPrice: 99.0, quarterlyPrice: 279.0, annualPrice: 990.0, barberLimit: 20, aiLimit: 1000 },
+      { name: 'Enterprise', monthlyPrice: 299.0, quarterlyPrice: 849.0, annualPrice: 2990.0, barberLimit: 99999, aiLimit: 99999 },
     ];
 
     for (const plan of defaultPlans) {
-      await this.prisma.subscription.upsert({
+      const existing = await this.prisma.subscription.findUnique({
         where: { name: plan.name },
-        update: {}, // Don't override if exists
-        create: plan,
       });
+      if (!existing) {
+        await this.prisma.subscription.create({
+          data: plan,
+        });
+      }
     }
     
     return { message: 'Default plans seeded successfully' };

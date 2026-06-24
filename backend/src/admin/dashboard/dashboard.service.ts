@@ -48,7 +48,7 @@ export class DashboardService {
       include: { subscription: true }
     });
     const monthlyRevenue = activeSubscribedSalons.reduce((sum, salon) => {
-      return sum + (salon.subscription?.price || 0);
+      return sum + (salon.subscription?.monthlyPrice || 0);
     }, 0);
 
     // 6. Subscriptions

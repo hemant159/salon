@@ -35,7 +35,7 @@ export default function RootLayout({
         {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto bg-[#f0f2f5]">
           {children}
-        </main>
+        </AuthProvider>
       </body>
     </html>
   );

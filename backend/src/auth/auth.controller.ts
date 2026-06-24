@@ -51,6 +51,15 @@ export class ResetPasswordDto {
   newPassword: string;
 }
 
+export class VerifyOtpDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @Length(6, 6)
+  otp: string;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -82,6 +91,24 @@ export class AuthController {
     if (!valid) throw new BadRequestException('Invalid or expired OTP. Please request a new one.');
     await this.authService.resetPassword(dto.email, dto.newPassword);
     return { message: 'Password reset successfully' };
+  }
+
+  @Post('super-admin/request-otp')
+  async superAdminRequestOtp(@Body() dto: ForgotPasswordDto) {
+    if (dto.email !== process.env.SUPER_ADMIN_EMAIL) {
+      throw new BadRequestException('Not authorized as Super Admin');
+    }
+    const otp = this.mailService.generateOtp();
+    this.mailService.storeOtp(dto.email, otp);
+    await this.mailService.sendOtpEmail(dto.email, otp);
+    return { message: 'OTP sent successfully to Super Admin' };
+  }
+
+  @Post('super-admin/verify-otp')
+  async superAdminVerifyOtp(@Body() dto: VerifyOtpDto) {
+    const valid = this.mailService.verifyOtp(dto.email, dto.otp);
+    if (!valid) throw new BadRequestException('Invalid or expired OTP.');
+    return this.authService.superAdminLogin(dto.email);
   }
 
   @Get('me')

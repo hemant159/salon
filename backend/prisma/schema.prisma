@@ -1,15 +1,20 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "library"
 }
 
 datasource db {
   provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Subscription {
   id              String   @id @default(uuid())
   name            String   @unique // Free, Starter, Premium, Enterprise
-  price           Float    @default(0.0)
+  monthlyPrice    Float    @default(0.0)
+  quarterlyPrice  Float    @default(0.0)
+  annualPrice     Float    @default(0.0)
   barberLimit     Int      @default(2)
   aiLimit         Int      @default(20)
   createdAt       DateTime @default(now())
@@ -51,7 +56,7 @@ model Branch {
 }
 
 // ==========================================
-// AI & SYSTEM CONFIGURATION
+// 2. AI CONFIGURATION & USAGE
 // ==========================================
 
 model AIPrompt {
@@ -70,7 +75,7 @@ model SystemConfig {
 }
 
 // ==========================================
-// AUDIT & API USAGE
+// 3. LOGS & ANALYTICS
 // ==========================================
 
 model AILog {
@@ -99,7 +104,7 @@ model APIUsage {
 }
 
 // ==========================================
-// DYNAMIC CMS & WHITE LABEL
+// 4. SUPER ADMIN CONFIGURATIONS
 // ==========================================
 
 model CMSPage {
@@ -130,4 +135,3 @@ model NotificationTemplate {
 
   @@unique([type, channel])
 }
-

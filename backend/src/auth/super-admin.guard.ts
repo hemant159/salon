@@ -1,8 +1,8 @@
 import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class SuperAdminGuard extends JwtAuthGuard {
+export class SuperAdminGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // First, run the standard JWT verification (which attaches req.user)
     const isAuthenticated = await super.canActivate(context);
